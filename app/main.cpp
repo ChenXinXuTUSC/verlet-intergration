@@ -1,0 +1,120 @@
+#include <memory>
+#include <vector>
+#include <functional>
+#include <future>
+
+
+#include "SFML/Graphics.hpp"
+
+#include "common.h"
+#include "constraint.h"
+#include "particle.h"
+
+const int   WINDOW_WID      = 720;
+const int   WINDOW_HEI      = 480;
+const float INTERVAL        = 10.0f;
+
+const int CLOTH_ROW = 10;
+const int CLOTH_COL = 10;
+
+const sf::Vector2f G(0.0f, 100.0f);
+
+template <typename Func, typename... Args>
+auto handlMouseClick(const sf::Event& event, Func&& func, Args&&... args) ->
+    typename std::result_of<Func(Args...)>::type {
+        
+}
+
+int main(int argc, char** argv) {
+    sf::RenderWindow window(sf::VideoMode(WINDOW_WID, WINDOW_HEI), "cloth sim");
+    window.setFramerateLimit(60);
+
+    std::vector<ptr<Particle>> particles(CLOTH_ROW * CLOTH_COL);
+    for (int i = 0; i < CLOTH_ROW; ++i) {
+        for (int j = 0; j < CLOTH_COL; ++j) {
+            particles[i * CLOTH_COL + j] = std::make_shared<Particle>(
+                WINDOW_HEI / 4 + INTERVAL * 3 * j, // row pos
+                WINDOW_WID / 4 + INTERVAL * 3 * i, // col pos
+                i ^ 0
+            );
+        }
+    }
+
+    std::vector<ptr<Constraint>> constraints;
+    for (int i = 0; i < CLOTH_ROW; ++i) {
+        for (int j = 0; j < CLOTH_COL; ++j) {
+            // vertical constraint
+            if (i < CLOTH_ROW - 1)
+                constraints.emplace_back(
+                    std::make_shared<Constraint>(
+                        particles[i * CLOTH_COL + j],
+                        particles[(i + 1) * CLOTH_COL + j]
+                    )
+                );
+            // horizontal constraint
+            if (j < CLOTH_COL - 1)
+                constraints.emplace_back(
+                    std::make_shared<Constraint>(
+                        particles[i * CLOTH_COL + j],
+                        particles[i * CLOTH_COL + (j + 1)]
+                    )
+                );
+            // diagnal constraint
+            // if (i < CLOTH_ROW - 1 && j < CLOTH_COL - 1)
+            //     constraints.emplace_back(
+            //         std::make_shared<Constraint>(
+            //             particles[i * CLOTH_COL + j],
+            //             particles[(i + 1) * CLOTH_COL + j + 1]
+            //         )
+            //     );
+        }
+    }
+
+    // main loop
+    sf::Clock timer;
+    while (window.isOpen()) {
+        sf::Time dT = timer.restart();
+
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        // physical update
+
+        // particle position
+        for (auto pt : particles) {
+            pt->applyForce(G);
+            pt->updatePos(dT.asSeconds());
+            pt->constrainedBox(WINDOW_WID, WINDOW_HEI, INTERVAL);
+        }
+
+        // particle constraint
+        for (auto ct : constraints) {
+            ct->satisfy();
+        }
+
+        // render update
+        window.clear(sf::Color::Black);
+
+        // draw joints
+        for (auto pt : particles) {
+            sf::Vertex ptpos(pt->currPos, sf::Color::White);
+            window.draw(&ptpos, 1, sf::Points);
+        }
+
+        // draw constraints
+        for (auto ct : constraints) {
+            sf::Vertex vtxArr[] {
+                sf::Vertex(ct->pt1->currPos, sf::Color::White),
+                sf::Vertex(ct->pt2->currPos, sf::Color::White),
+            };
+            window.draw(vtxArr, 2, sf::Lines);
+        }
+
+        window.display();
+    }
+
+    return 0;
+}
