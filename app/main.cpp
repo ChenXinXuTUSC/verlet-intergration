@@ -1,8 +1,7 @@
-#include <memory>
-#include <vector>
 #include <functional>
 #include <future>
-
+#include <memory>
+#include <vector>
 
 #include "SFML/Graphics.hpp"
 
@@ -10,20 +9,14 @@
 #include "constraint.h"
 #include "particle.h"
 
-const int   WINDOW_WID      = 720;
-const int   WINDOW_HEI      = 480;
-const float INTERVAL        = 10.0f;
+const int   WINDOW_WID = 720;
+const int   WINDOW_HEI = 480;
+const float INTERVAL   = 10.0f;
 
 const int CLOTH_ROW = 10;
 const int CLOTH_COL = 10;
 
 const sf::Vector2f G(0.0f, 100.0f);
-
-template <typename Func, typename... Args>
-auto handlMouseClick(const sf::Event& event, Func&& func, Args&&... args) ->
-    typename std::result_of<Func(Args...)>::type {
-        
-}
 
 int main(int argc, char** argv) {
     sf::RenderWindow window(sf::VideoMode(WINDOW_WID, WINDOW_HEI), "cloth sim");
@@ -45,20 +38,14 @@ int main(int argc, char** argv) {
         for (int j = 0; j < CLOTH_COL; ++j) {
             // vertical constraint
             if (i < CLOTH_ROW - 1)
-                constraints.emplace_back(
-                    std::make_shared<Constraint>(
-                        particles[i * CLOTH_COL + j],
-                        particles[(i + 1) * CLOTH_COL + j]
-                    )
-                );
+                constraints.emplace_back(std::make_shared<Constraint>(
+                    particles[i * CLOTH_COL + j], particles[(i + 1) * CLOTH_COL + j]
+                ));
             // horizontal constraint
             if (j < CLOTH_COL - 1)
-                constraints.emplace_back(
-                    std::make_shared<Constraint>(
-                        particles[i * CLOTH_COL + j],
-                        particles[i * CLOTH_COL + (j + 1)]
-                    )
-                );
+                constraints.emplace_back(std::make_shared<Constraint>(
+                    particles[i * CLOTH_COL + j], particles[i * CLOTH_COL + (j + 1)]
+                ));
             // diagnal constraint
             // if (i < CLOTH_ROW - 1 && j < CLOTH_COL - 1)
             //     constraints.emplace_back(
@@ -91,9 +78,7 @@ int main(int argc, char** argv) {
         }
 
         // particle constraint
-        for (auto ct : constraints) {
-            ct->satisfy();
-        }
+        for (auto ct : constraints) { ct->satisfy(); }
 
         // render update
         window.clear(sf::Color::Black);

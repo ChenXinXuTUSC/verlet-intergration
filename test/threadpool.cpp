@@ -89,12 +89,21 @@ private:
     std::atomic<bool> stop;
 };
 
+int add(int &a, int & b) {
+    std::cout << "add: " << a + b << std::endl;
+    return a + b;
+}
+
 // 使用示例
 int main() {
+
+    int data = 0;
+
     ThreadPool pool(4);
 
-    auto result1 = pool.enqueue(1, []() -> int {
+    auto result1 = pool.enqueue(1, [data]() -> int {
         std::cout << "Executing task 1" << std::endl;
+        std::cout << "data: " << data << std::endl;
         return 1;
     });
 
@@ -102,6 +111,9 @@ int main() {
         std::cout << "Executing task 2" << std::endl;
         return 2;
     });
+
+    int a = 0, b = 1;
+    auto result3 = pool.enqueue(2, add, a, b);
 
     std::cout << "Task 1 result: " << result1.get() << std::endl;
     std::cout << "Task 2 result: " << result2.get() << std::endl;
