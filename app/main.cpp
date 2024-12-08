@@ -37,15 +37,15 @@ int main(int argc, char** argv) {
             if (i < CLOTH_ROW - 1)
                 constraints.emplace_back(std::make_shared<Constraint>(
                     particles[i * CLOTH_COL + j],
-                    particles[(i + 1) * CLOTH_COL + j], 0.2f
-                    // randomNum(0.45f, 0.55f)
+                    particles[(i + 1) * CLOTH_COL + j],
+                    randomNum(0.10f, 0.20f)
                 ));
             // horizontal constraint
             if (j < CLOTH_COL - 1)
                 constraints.emplace_back(std::make_shared<Constraint>(
                     particles[i * CLOTH_COL + j],
-                    particles[i * CLOTH_COL + (j + 1)], 0.2f
-                    // randomNum(0.45f, 0.55f)
+                    particles[i * CLOTH_COL + (j + 1)],
+                    randomNum(0.10f, 0.20f)
                 ));
             // diagnal constraint
             // if (i < CLOTH_ROW - 1 && j < CLOTH_COL - 1)
