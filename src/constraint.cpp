@@ -3,21 +3,21 @@
 #include "constraint.h"
 #include "utils.h"
 
-Constraint::Constraint(ptr<Particle> pt1, ptr<Particle> pt2, bool active)
-    : pt1(pt1), pt2(pt2), isActive(active) {
+Constraint::Constraint(ptr<Particle> pt1, ptr<Particle> pt2, float rigid, bool active)
+    : pt1(pt1), pt2(pt2), rigidity(rigid), isActive(active) {
     sf::Vector2f delta = this->pt2->currPos - this->pt1->currPos;
     this->initDist     = std::hypot(delta.x, delta.y);
 }
 
 void Constraint::satisfy() {
     if (!this->isActive) return;
-    
+
     sf::Vector2f delta = this->pt2->currPos - this->pt1->currPos;
 
     float currDist  = std::hypot(delta.x, delta.y);
-    float diffRatio = (currDist - this->initDist) / this->initDist;
+    this->currInts  = (currDist - this->initDist) / this->initDist;
 
-    sf::Vector2f correction = delta * 0.5f * diffRatio;
+    sf::Vector2f correction = delta * this->rigidity * this->currInts;
     if (this->pt1->movable) this->pt1->currPos += correction;
     if (this->pt2->movable) this->pt2->currPos -= correction;
 }

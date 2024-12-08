@@ -6,12 +6,12 @@
 #include "particle.h"
 #include "eventhandler.h"
 
-const int   WINDOW_WID = 720;
-const int   WINDOW_HEI = 480;
-const float INTERVAL   = 10.0f;
+const int   WINDOW_WID = 1024;
+const int   WINDOW_HEI = 768;
+const float INTERVAL   = 5.0f;
 
-const int CLOTH_ROW = 10;
-const int CLOTH_COL = 10;
+const int CLOTH_ROW = 20;
+const int CLOTH_COL = 20;
 
 const sf::Vector2f G(0.0f, 100.0f);
 
@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
     for (int i = 0; i < CLOTH_ROW; ++i) {
         for (int j = 0; j < CLOTH_COL; ++j) {
             particles[i * CLOTH_COL + j] = std::make_shared<Particle>(
-                WINDOW_HEI / 4 + INTERVAL * 3 * j, // row pos
+                WINDOW_HEI / 2 + INTERVAL * 3 * j, // row pos
                 WINDOW_WID / 4 + INTERVAL * 3 * i, // col pos
                 i ^ 0
             );
@@ -36,12 +36,16 @@ int main(int argc, char** argv) {
             // vertical constraint
             if (i < CLOTH_ROW - 1)
                 constraints.emplace_back(std::make_shared<Constraint>(
-                    particles[i * CLOTH_COL + j], particles[(i + 1) * CLOTH_COL + j]
+                    particles[i * CLOTH_COL + j],
+                    particles[(i + 1) * CLOTH_COL + j], 0.2f
+                    // randomNum(0.45f, 0.55f)
                 ));
             // horizontal constraint
             if (j < CLOTH_COL - 1)
                 constraints.emplace_back(std::make_shared<Constraint>(
-                    particles[i * CLOTH_COL + j], particles[i * CLOTH_COL + (j + 1)]
+                    particles[i * CLOTH_COL + j],
+                    particles[i * CLOTH_COL + (j + 1)], 0.2f
+                    // randomNum(0.45f, 0.55f)
                 ));
             // diagnal constraint
             // if (i < CLOTH_ROW - 1 && j < CLOTH_COL - 1)
@@ -101,10 +105,10 @@ int main(int argc, char** argv) {
         // draw constraints
         for (auto ct : constraints) {
             if (!ct->isActive) continue;
-            
+
             sf::Vertex vtxArr[] {
-                sf::Vertex(ct->pt1->currPos, sf::Color::White),
-                sf::Vertex(ct->pt2->currPos, sf::Color::White),
+                sf::Vertex(ct->pt1->currPos, sf::Color(ct->currInts * 255, 100, 50)),
+                sf::Vertex(ct->pt2->currPos, sf::Color(ct->currInts * 255, 100, 50)),
             };
             window.draw(vtxArr, 2, sf::Lines);
         }

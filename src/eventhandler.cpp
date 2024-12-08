@@ -5,8 +5,7 @@ void EventHandler::MouseHandler(
     std::vector<ptr<Particle>>&   particles,
     std::vector<ptr<Constraint>>& constraints
 ) {
-    if (event.type == sf::Event::MouseButtonPressed &&
-        event.mouseButton.button == sf::Mouse::Left) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
         float mouseX = static_cast<float>(event.mouseButton.x);
         float mouseY = static_cast<float>(event.mouseButton.y);
 

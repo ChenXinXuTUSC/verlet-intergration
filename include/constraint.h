@@ -9,7 +9,7 @@
 
 class Constraint {
 public:
-    Constraint(ptr<Particle> pt1, ptr<Particle> pt2, bool active = true);
+    Constraint(ptr<Particle> pt1, ptr<Particle> pt2, float rigid = 0.5f, bool active = true);
 
     void satisfy();
 
@@ -24,6 +24,8 @@ public:
     ptr<Particle> pt1;
     ptr<Particle> pt2;
     float         initDist;
+    float         rigidity;
+    float         currInts;
     bool          isActive;
 };
 
