@@ -1,22 +1,24 @@
 #ifndef EVENTHANDLER_H
 #define EVENTHANDLER_H
 
-#include "SFML/System.hpp"
-
 #include <functional>
+
+#include "SFML/System.hpp"
+#include "SFML/Window.hpp"
+
+#include "particle.h"
+#include "constraint.h"
+
+#include "common.h"
+#include "utils.h"
 
 class EventHandler {
 public:
-    template<typename Func, typename... Args>
-    void setHandler(Func&& func, Args... args) {
-        using returnType = typename std::result_of<func(args...)>::type;
-        handler = []() {
-            func(args...);
-        };
-    }
-
-private:
-    std::function<void()> handler;
+    static void MouseHandler(
+        const sf::Event&              event,
+        std::vector<ptr<Particle>>&   particles,
+        std::vector<ptr<Constraint>>& constraints
+    );
 };
 
 #endif

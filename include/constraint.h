@@ -9,14 +9,22 @@
 
 class Constraint {
 public:
-    Constraint(ptr<Particle> pt1, ptr<Particle> pt2);
+    Constraint(ptr<Particle> pt1, ptr<Particle> pt2, bool active = true);
 
     void satisfy();
+
+    static ptr<Constraint> findNearestConstraint(
+        float x, float y,
+        float r, const std::vector<ptr<Constraint>> constraints
+    );
+
+    void setActive(bool active);
 
 public:
     ptr<Particle> pt1;
     ptr<Particle> pt2;
     float         initDist;
+    bool          isActive;
 };
 
 #endif

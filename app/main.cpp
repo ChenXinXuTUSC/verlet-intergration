@@ -1,13 +1,10 @@
-#include <functional>
-#include <future>
-#include <memory>
-#include <vector>
+#include "common.h"
 
 #include "SFML/Graphics.hpp"
 
-#include "common.h"
 #include "constraint.h"
 #include "particle.h"
+#include "eventhandler.h"
 
 const int   WINDOW_WID = 720;
 const int   WINDOW_HEI = 480;
@@ -64,8 +61,20 @@ int main(int argc, char** argv) {
 
         sf::Event event;
         while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
+            switch (event.type)
+            {
+                case sf::Event::Closed:
+                    window.close();
+                    break;
+                
+                case sf::Event::MouseButtonPressed:
+                    EventHandler::MouseHandler(event, particles, constraints);
+                    break;
+
+
+                default:
+                    break;
+            }
         }
 
         // physical update
@@ -91,6 +100,8 @@ int main(int argc, char** argv) {
 
         // draw constraints
         for (auto ct : constraints) {
+            if (!ct->isActive) continue;
+            
             sf::Vertex vtxArr[] {
                 sf::Vertex(ct->pt1->currPos, sf::Color::White),
                 sf::Vertex(ct->pt2->currPos, sf::Color::White),
