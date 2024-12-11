@@ -5,29 +5,39 @@
     },
     "tasks": [
         {
-            "label": "CMake: Configure",
             "type": "cmake",
+            "label": "CMake: 配置",
             "command": "configure",
-            // "type": "shell",
-            // "command": "cmake -B build .",
-            "detail": "CMake template configure task"
+            "problemMatcher": [],
+            "detail": "CMake 模板 配置 任务"
         },
         {
-            "label": "CMake: Build",
             "type": "cmake",
+            "label": "CMake: 生成",
             "command": "build",
-            // "type": "shell",
-            // "command": "cmake --build build",
             "targets": [
-				"all"
+                "ALL_BUILD"
             ],
+            "group": "build",
+            "problemMatcher": [],
+            "detail": "CMake 模板 生成 任务",
+            "dependsOn": [
+                "CMake: 配置"
+            ]
+        },
+        {
+            "type": "cmake",
+            "label": "CMake: 安装",
+            "command": "install",
+            "problemMatcher": [],
+            "detail": "CMake 模板 安装 任务",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
             "dependsOn": [
-                "CMake: Configure"
+                "CMake: 生成"
             ]
-        },
+        }
     ]
 }
