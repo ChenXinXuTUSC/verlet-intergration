@@ -8,10 +8,10 @@
 
 const int   WINDOW_WID = 1024;
 const int   WINDOW_HEI = 768;
-const float INTERVAL   = 5.0f;
+const float INTERVAL   = 2.5f;
 
-const int CLOTH_ROW = 20;
-const int CLOTH_COL = 20;
+const int CLOTH_ROW = 30;
+const int CLOTH_COL = 30;
 
 const sf::Vector2f G(0.0f, 100.0f);
 
