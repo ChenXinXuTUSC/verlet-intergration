@@ -1,5 +1,5 @@
-#ifndef PARTICLE_H
-#define PARTICLE_H
+#ifndef __PARTICLE_H__
+#define __PARTICLE_H__
 
 #include <memory>
 

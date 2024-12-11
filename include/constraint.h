@@ -1,5 +1,5 @@
-#ifndef CONSTRAINT_H
-#define CONSTRAINT_H
+#ifndef __CONSTRAINT_H__
+#define __CONSTRAINT_H__
 
 #include <climits>
 #include <cmath>
